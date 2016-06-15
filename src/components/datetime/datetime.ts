@@ -414,6 +414,16 @@ export class DateTime {
    */
   @Output() ionCancel: EventEmitter<any> = new EventEmitter();
 
+  /**
+   * @output {any} Any expression to evaluate when the datetime selection has opened.
+   */
+  @Output() ionOpen: EventEmitter<any> = new EventEmitter();
+
+  /**
+   * @output {any} Any expression to evaluate when the datetime selection has closed.
+   */
+  @Output() ionClose: EventEmitter<any> = new EventEmitter();
+
   constructor(
     private _form: Form,
     private _config: Config,
@@ -489,11 +499,14 @@ export class DateTime {
       this.validate(picker);
     });
 
-    this._nav.present(picker, pickerOptions);
+    this._nav.present(picker, pickerOptions).then(() => {
+      this.ionOpen.emit(null)
+    });
 
     this._isOpen = true;
     picker.onDismiss(() => {
       this._isOpen = false;
+      this.ionClose.emit(null);
     });
   }
 
